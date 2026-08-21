@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Search, MapPin, Star, Send, UserPlus, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useMentors } from '../context/MentorContext';
+import { useMessages } from '../context/MessageContext';
 import './Mentorship.css';
 
 const Mentorship = () => {
   const { user, registerAsMentor } = useAuth();
   const { mentors, addMentor } = useMentors();
+  const { sendMessage } = useMessages();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMentor, setSelectedMentor] = useState(null);
@@ -24,6 +26,9 @@ const Mentorship = () => {
 
   const handleSend = (e) => {
     e.preventDefault();
+    if (user && message.trim()) {
+      sendMessage(user.name, selectedMentor.name, message);
+    }
     setIsSent(true);
     setTimeout(() => {
       setIsSent(false);
