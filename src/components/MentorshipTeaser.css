@@ -1,0 +1,110 @@
+.mentorship-section {
+  padding: var(--space-12) 0;
+  background: linear-gradient(180deg, var(--bg-main) 0%, rgba(79, 70, 229, 0.03) 100%);
+  position: relative;
+}
+
+.mentorship-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.mentor-benefits {
+  list-style: none;
+  margin-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mentor-benefits li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.125rem;
+  color: var(--text-main);
+}
+
+.check-icon {
+  color: hsl(var(--color-primary));
+  font-weight: bold;
+}
+
+.mentor-cards-container {
+  position: relative;
+  height: 400px;
+}
+
+.mentor-profile {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  width: 280px;
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.card-1 {
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.card-2 {
+  top: 45%;
+  left: 0;
+  animation-delay: 2s;
+}
+
+.card-3 {
+  bottom: 10%;
+  right: 5%;
+  animation-delay: 4s;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.bg-blue { background: linear-gradient(135deg, #60A5FA, #3B82F6); }
+.bg-pink { background: linear-gradient(135deg, #F472B6, #EC4899); }
+.bg-green { background: linear-gradient(135deg, #34D399, #10B981); }
+
+.text-sm {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+@keyframes float-slow {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@media (max-width: 992px) {
+  .mentorship-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .mentorship-text {
+    text-align: center;
+  }
+  
+  .mentor-benefits {
+    align-items: center;
+  }
+  
+  .mentor-cards-container {
+    height: 350px;
+    margin-top: var(--space-6);
+  }
+  
+  .card-1 { right: 5%; left: auto; }
+  .card-2 { left: 5%; }
+  .card-3 { right: auto; left: 15%; bottom: 5%; }
+}
