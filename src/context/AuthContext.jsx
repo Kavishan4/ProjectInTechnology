@@ -71,6 +71,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Switch role between Fresher and Mentor (for users who are already mentors)
+  const switchRole = async (newRole) => {
+    if (!user) return;
+    try {
+      await fetch('/api/auth/role', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, role: newRole }),
+      });
+      const updatedUser = { ...user, role: newRole };
+      setUser(updatedUser);
+      localStorage.setItem('bridgeEdUser', JSON.stringify(updatedUser));
+    } catch (err) {
+      console.error('Switch role error:', err);
+      // Fallback: switch locally
+      const updatedUser = { ...user, role: newRole };
+      setUser(updatedUser);
+      localStorage.setItem('bridgeEdUser', JSON.stringify(updatedUser));
+    }
+  };
+
+  // Leave mentor role — switch back to Fresher
+  const leaveMentorRole = async () => {
+    await switchRole('Fresher');
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('bridgeEdUser');
@@ -85,6 +111,8 @@ export const AuthProvider = ({ children }) => {
       login, 
       logout, 
       registerAsMentor,
+      switchRole,
+      leaveMentorRole,
       isSignInModalOpen, 
       openSignInModal, 
       closeSignInModal,

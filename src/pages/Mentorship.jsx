@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Star, Send, UserPlus, X } from 'lucide-react';
+import { Search, MapPin, Star, Send, UserPlus, X, LogOut, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useMentors } from '../context/MentorContext';
 import { useMessages } from '../context/MessageContext';
 import './Mentorship.css';
 
 const Mentorship = () => {
-  const { user, registerAsMentor } = useAuth();
+  const { user, registerAsMentor, leaveMentorRole, switchRole } = useAuth();
   const { mentors, addMentor } = useMentors();
   const { sendMessage } = useMessages();
   
@@ -17,9 +17,11 @@ const Mentorship = () => {
 
   const [showMentorReg, setShowMentorReg] = useState(false);
   const [regData, setRegData] = useState({ university: '', faculty: '', subjects: '' });
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   const filteredMentors = mentors.filter(m => 
-    m.faculty.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    m.faculty?.toLowerCase().includes(searchTerm.toLowerCase()) || 
     m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (m.subjects && m.subjects.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -52,6 +54,21 @@ const Mentorship = () => {
     }
   };
 
+  const handleLeaveRole = async () => {
+    setIsSwitching(true);
+    await leaveMentorRole();
+    setShowLeaveConfirm(false);
+    setIsSwitching(false);
+  };
+
+  const handleSwitchRole = async () => {
+    if (!user) return;
+    setIsSwitching(true);
+    const newRole = user.role === 'Mentor' ? 'Fresher' : 'Mentor';
+    await switchRole(newRole);
+    setIsSwitching(false);
+  };
+
   return (
     <div className="mentorship-page page-container">
       <div className="container">
@@ -69,7 +86,39 @@ const Mentorship = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
+          {/* ── Mentor controls: only visible to logged-in users with Mentor role ── */}
+          {user && user.role === 'Mentor' && (
+            <div className="mentor-controls-bar">
+              {/* Role mode switch */}
+              <div className="role-switch-container">
+                <span className="role-switch-label">Viewing as:</span>
+                <button
+                  className={`role-switch-btn ${isSwitching ? 'switching' : ''}`}
+                  onClick={handleSwitchRole}
+                  disabled={isSwitching}
+                  title="Switch between Mentor and Fresher view"
+                >
+                  <span className={`role-pill ${user.role === 'Mentor' ? 'active' : ''}`}>Mentor</span>
+                  <span className="role-switch-icon">
+                    <RefreshCw size={14} />
+                  </span>
+                  <span className={`role-pill ${user.role === 'Fresher' ? 'active' : ''}`}>Fresher</span>
+                </button>
+              </div>
+
+              {/* Leave mentor role */}
+              <button
+                className="btn btn-leave-mentor"
+                onClick={() => setShowLeaveConfirm(true)}
+              >
+                <LogOut size={16} />
+                Leave Mentor Role
+              </button>
+            </div>
+          )}
+
+          {/* ── Become a mentor banner: only for Freshers ── */}
           {user && user.role === 'Fresher' && (
             <div className="become-mentor-banner mt-4">
               <div className="banner-content glass-card flex items-center justify-between p-4 rounded-xl shadow-sm">
@@ -107,6 +156,7 @@ const Mentorship = () => {
           ))}
         </div>
 
+        {/* ── Message modal ── */}
         {selectedMentor && (
           <div className="modal-overlay">
             <div className="modal-content glass-card animate-fade-in-up">
@@ -137,6 +187,7 @@ const Mentorship = () => {
           </div>
         )}
         
+        {/* ── Register as mentor modal ── */}
         {showMentorReg && (
           <div className="modal-overlay">
             <div className="modal-content glass-card animate-fade-in-up">
@@ -188,12 +239,40 @@ const Mentorship = () => {
             </div>
           </div>
         )}
+
+        {/* ── Leave mentor confirmation modal ── */}
+        {showLeaveConfirm && (
+          <div className="modal-overlay">
+            <div className="modal-content glass-card animate-fade-in-up" style={{ maxWidth: '420px', textAlign: 'center' }}>
+              <div className="leave-mentor-icon">
+                <LogOut size={32} />
+              </div>
+              <h2 style={{ marginTop: '1rem' }}>Leave Mentor Role?</h2>
+              <p className="text-muted" style={{ margin: '0.75rem 0 1.5rem' }}>
+                You'll be switched back to <strong>Fresher</strong>. Your mentor profile will remain, but you won't appear as an active mentor.
+              </p>
+              <div className="modal-actions" style={{ justifyContent: 'center', gap: '1rem' }}>
+                <button className="btn btn-secondary" onClick={() => setShowLeaveConfirm(false)}>
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-leave-mentor"
+                  onClick={handleLeaveRole}
+                  disabled={isSwitching}
+                >
+                  {isSwitching ? 'Switching...' : 'Yes, Leave Role'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 const universityAbbr = (name) => {
+  if (!name) return '';
   if (name.includes('Moratuwa')) return 'UoM';
   if (name.includes('Colombo')) return 'UoC';
   if (name.includes('Peradeniya')) return 'UoP';

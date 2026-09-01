@@ -178,3 +178,134 @@
   margin-bottom: var(--space-2);
   font-weight: 500;
 }
+
+/* ── Mentor Controls Bar ── */
+.mentor-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(var(--color-primary-rgb), 0.06);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.15);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Role Switch ── */
+.role-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.role-switch-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.role-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(var(--color-primary-rgb), 0.3);
+  background: var(--bg-card);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  color: var(--text-main);
+}
+
+.role-switch-btn:hover:not(:disabled) {
+  border-color: hsl(var(--color-primary));
+  box-shadow: 0 0 0 3px hsla(var(--color-primary), 0.15);
+  transform: scale(1.02);
+}
+
+.role-switch-btn:disabled,
+.role-switch-btn.switching {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.role-switch-btn .role-switch-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  animation: none;
+}
+
+.role-switch-btn.switching .role-switch-icon svg {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.role-pill {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  color: var(--text-muted);
+}
+
+.role-pill.active {
+  background: linear-gradient(135deg, hsl(var(--color-primary)), hsl(var(--color-secondary)));
+  color: #fff;
+  box-shadow: 0 2px 8px hsla(var(--color-primary), 0.4);
+}
+
+/* ── Leave Mentor Button ── */
+.btn-leave-mentor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-leave-mentor:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-leave-mentor:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Leave Mentor Confirm Modal Icon ── */
+.leave-mentor-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  margin: 0 auto;
+}
